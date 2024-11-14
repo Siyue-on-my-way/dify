@@ -18,6 +18,7 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV POETRY_VIRTUALENVS_CREATE=true
 ENV POETRY_REQUESTS_TIMEOUT=15
 
+### 分段构建
 FROM base AS packages
 
 # if you located in China, you can use aliyun mirror to speed up
@@ -55,7 +56,8 @@ RUN apt-get update \
     && echo "deb http://deb.debian.org/debian testing main" > /etc/apt/sources.list \
     && apt-get update \
     # For Security
-    && apt-get install -y --no-install-recommends expat=2.6.3-2 libldap-2.5-0=2.5.18+dfsg-3+b1 perl=5.40.0-7 libsqlite3-0=3.46.1-1 zlib1g=1:1.3.dfsg+really1.3.1-1+b1 \
+#    && apt-get install -y --no-install-recommends expat=2.6.3-2 libldap-2.5-0=2.5.18+dfsg-3+b1 perl=5.40.0-7 libsqlite3-0=3.46.1-1 zlib1g=1:1.3.dfsg+really1.3.1-1+b1 \
+    && apt-get install -y --no-install-recommends expat libldap-2.5-0=2.5.18+dfsg-3+b1 perl=5.40.0-7 libsqlite3-0=3.46.1-1 zlib1g=1:1.3.dfsg+really1.3.1-1+b1 \
     # install a chinese font to support the use of tools like matplotlib
     && apt-get install -y fonts-noto-cjk \
     && apt-get autoremove -y \
@@ -70,7 +72,7 @@ ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
 RUN python -c "import nltk; nltk.download('punkt'); nltk.download('averaged_perceptron_tagger')"
 
 # Copy source code
-COPY . /app/api/
+#COPY . /app/api/
 
 # Copy entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh

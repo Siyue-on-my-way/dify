@@ -37,13 +37,13 @@ x-shared-env: &shared-api-worker-env
   API_TOOL_DEFAULT_READ_TIMEOUT: ${API_TOOL_DEFAULT_READ_TIMEOUT:-60}
   DB_USERNAME: ${DB_USERNAME:-postgres}
   DB_PASSWORD: ${DB_PASSWORD:-difyai123456}
-  DB_HOST: ${DB_HOST:-db}
+  DB_HOST: ${DB_HOST:-dify-db}
   DB_PORT: ${DB_PORT:-5432}
   DB_DATABASE: ${DB_DATABASE:-dify}
   SQLALCHEMY_POOL_SIZE: ${SQLALCHEMY_POOL_SIZE:-30}
   SQLALCHEMY_POOL_RECYCLE: ${SQLALCHEMY_POOL_RECYCLE:-3600}
   SQLALCHEMY_ECHO: ${SQLALCHEMY_ECHO:-false}
-  REDIS_HOST: ${REDIS_HOST:-redis}
+  REDIS_HOST: ${REDIS_HOST:-dify-redis}
   REDIS_PORT: ${REDIS_PORT:-6379}
   REDIS_USERNAME: ${REDIS_USERNAME:-}
   REDIS_PASSWORD: ${REDIS_PASSWORD:-difyai123456}
@@ -110,12 +110,12 @@ x-shared-env: &shared-api-worker-env
   VECTOR_STORE: ${VECTOR_STORE:-weaviate}
   WEAVIATE_ENDPOINT: ${WEAVIATE_ENDPOINT:-http://weaviate:8080}
   WEAVIATE_API_KEY: ${WEAVIATE_API_KEY:-WVF5YThaHlkYwhGUSmCRgsX3tD5ngdN8pkih}
-  QDRANT_URL: ${QDRANT_URL:-http://qdrant:6333}
+  QDRANT_URL: ${QDRANT_URL:-http://dify-qdrant:6333}
   QDRANT_API_KEY: ${QDRANT_API_KEY:-difyai123456}
   QDRANT_CLIENT_TIMEOUT: ${QDRANT_CLIENT_TIMEOUT:-20}
   QDRANT_GRPC_ENABLED: ${QDRANT_GRPC_ENABLED:-false}
   QDRANT_GRPC_PORT: ${QDRANT_GRPC_PORT:-6334}
-  COUCHBASE_CONNECTION_STRING: ${COUCHBASE_CONNECTION_STRING:-'couchbase-server'}
+  COUCHBASE_CONNECTION_STRING: ${COUCHBASE_CONNECTION_STRING:-'dify-couchbase-server'}
   COUCHBASE_USER: ${COUCHBASE_USER:-Administrator}
   COUCHBASE_PASSWORD: ${COUCHBASE_PASSWORD:-password}
   COUCHBASE_BUCKET_NAME: ${COUCHBASE_BUCKET_NAME:-Embeddings}
@@ -124,23 +124,23 @@ x-shared-env: &shared-api-worker-env
   MILVUS_TOKEN: ${MILVUS_TOKEN:-}
   MILVUS_USER: ${MILVUS_USER:-root}
   MILVUS_PASSWORD: ${MILVUS_PASSWORD:-Milvus}
-  MYSCALE_HOST: ${MYSCALE_HOST:-myscale}
+  MYSCALE_HOST: ${MYSCALE_HOST:-dify-myscale}
   MYSCALE_PORT: ${MYSCALE_PORT:-8123}
   MYSCALE_USER: ${MYSCALE_USER:-default}
   MYSCALE_PASSWORD: ${MYSCALE_PASSWORD:-}
   MYSCALE_DATABASE: ${MYSCALE_DATABASE:-dify}
   MYSCALE_FTS_PARAMS: ${MYSCALE_FTS_PARAMS:-}
-  RELYT_HOST: ${RELYT_HOST:-db}
+  RELYT_HOST: ${RELYT_HOST:-dify-db}
   RELYT_PORT: ${RELYT_PORT:-5432}
   RELYT_USER: ${RELYT_USER:-postgres}
   RELYT_PASSWORD: ${RELYT_PASSWORD:-difyai123456}
   RELYT_DATABASE: ${RELYT_DATABASE:-postgres}
-  PGVECTOR_HOST: ${PGVECTOR_HOST:-pgvector}
+  PGVECTOR_HOST: ${PGVECTOR_HOST:-dify-pgvector}
   PGVECTOR_PORT: ${PGVECTOR_PORT:-5432}
   PGVECTOR_USER: ${PGVECTOR_USER:-postgres}
   PGVECTOR_PASSWORD: ${PGVECTOR_PASSWORD:-difyai123456}
   PGVECTOR_DATABASE: ${PGVECTOR_DATABASE:-dify}
-  TIDB_VECTOR_HOST: ${TIDB_VECTOR_HOST:-tidb}
+  TIDB_VECTOR_HOST: ${TIDB_VECTOR_HOST:-dify-tidb}
   TIDB_VECTOR_PORT: ${TIDB_VECTOR_PORT:-4000}
   TIDB_VECTOR_USER: ${TIDB_VECTOR_USER:-}
   TIDB_VECTOR_PASSWORD: ${TIDB_VECTOR_PASSWORD:-}
@@ -157,7 +157,7 @@ x-shared-env: &shared-api-worker-env
   TIDB_REGION: ${TIDB_REGION:-regions/aws-us-east-1}
   TIDB_PROJECT_ID: ${TIDB_PROJECT_ID:-dify}
   TIDB_SPEND_LIMIT: ${TIDB_SPEND_LIMIT:-100}
-  ORACLE_HOST: ${ORACLE_HOST:-oracle}
+  ORACLE_HOST: ${ORACLE_HOST:-dify-oracle}
   ORACLE_PORT: ${ORACLE_PORT:-1521}
   ORACLE_USER: ${ORACLE_USER:-dify}
   ORACLE_PASSWORD: ${ORACLE_PASSWORD:-dify}
@@ -185,7 +185,7 @@ x-shared-env: &shared-api-worker-env
   ANALYTICDB_PASSWORD: ${ANALYTICDB_PASSWORD:-}
   ANALYTICDB_NAMESPACE: ${ANALYTICDB_NAMESPACE:-dify}
   ANALYTICDB_NAMESPACE_PASSWORD: ${ANALYTICDB_NAMESPACE_PASSWORD:-}
-  OPENSEARCH_HOST: ${OPENSEARCH_HOST:-opensearch}
+  OPENSEARCH_HOST: ${OPENSEARCH_HOST:-dify-opensearch}
   OPENSEARCH_PORT: ${OPENSEARCH_PORT:-9200}
   OPENSEARCH_USER: ${OPENSEARCH_USER:-admin}
   OPENSEARCH_PASSWORD: ${OPENSEARCH_PASSWORD:-admin}
@@ -268,7 +268,7 @@ x-shared-env: &shared-api-worker-env
   POSITION_PROVIDER_INCLUDES: ${POSITION_PROVIDER_INCLUDES:-}
   POSITION_PROVIDER_EXCLUDES: ${POSITION_PROVIDER_EXCLUDES:-}
   MAX_VARIABLE_SIZE: ${MAX_VARIABLE_SIZE:-204800}
-  OCEANBASE_VECTOR_HOST: ${OCEANBASE_VECTOR_HOST:-http://oceanbase-vector}
+  OCEANBASE_VECTOR_HOST: ${OCEANBASE_VECTOR_HOST:-http://dify-oceanbase-vector}
   OCEANBASE_VECTOR_PORT: ${OCEANBASE_VECTOR_PORT:-2881}
   OCEANBASE_VECTOR_USER: ${OCEANBASE_VECTOR_USER:-root@test}
   OCEANBASE_VECTOR_PASSWORD: ${OCEANBASE_VECTOR_PASSWORD:-difyai123456}
@@ -279,28 +279,38 @@ x-shared-env: &shared-api-worker-env
 
 services:
   # API service
-  api:
-    image: langgenius/dify-api:0.11.1
+  dify-api:
+    build: ../api
+#    image: langgenius/dify-api:0.11.1
+    image: dify-api:1
     restart: always
     environment:
       # Use the shared environment variables.
       <<: *shared-api-worker-env
       # Startup mode, 'api' starts the API server.
       MODE: api
+      CONSOLE_API_URL: http://dify-api:5001
+      SERVICE_API_URL: http://dify-api:5001
+      CONSOLE_WEB_URL: http://dify-web:3000
+      APP_WEB_URL: http://dify-web:3000
+    ports:
+      - "10011:5001"
     depends_on:
-      - db
-      - redis
+      - dify-db
+      - dify-redis
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
+      - ../api:/app/api/     # Dockerfile中不COPY代码，这里挂载进去
     networks:
-      - ssrf_proxy_network
+      - dify-ssrf_proxy_network
       - default
 
   # worker service
   # The Celery worker for processing the queue.
-  worker:
-    image: langgenius/dify-api:0.11.1
+  dify-worker:
+#    image: langgenius/dify-api:0.11.1
+    image: dify-api:1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -308,18 +318,20 @@ services:
       # Startup mode, 'worker' starts the Celery worker for processing the queue.
       MODE: worker
     depends_on:
-      - db
-      - redis
+      - dify-db
+      - dify-redis
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
     networks:
-      - ssrf_proxy_network
+      - dify-ssrf_proxy_network
       - default
 
   # Frontend web application.
-  web:
-    image: langgenius/dify-web:0.11.1
+  dify-web:
+#    image: langgenius/dify-web:0.11.1
+    build: ../web
+    image: dify-web:1
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
@@ -328,9 +340,11 @@ services:
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
       TEXT_GENERATION_TIMEOUT_MS: ${TEXT_GENERATION_TIMEOUT_MS:-60000}
       CSP_WHITELIST: ${CSP_WHITELIST:-}
+    ports:
+      - 10012:3000
 
   # The postgres database.
-  db:
+  dify-db:
     image: postgres:15-alpine
     restart: always
     environment:
@@ -346,6 +360,8 @@ services:
                -c 'effective_cache_size=${POSTGRES_EFFECTIVE_CACHE_SIZE:-4096MB}'
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
+    ports:
+      - "10013:5432"
     healthcheck:
       test: ['CMD', 'pg_isready']
       interval: 1s
@@ -353,7 +369,7 @@ services:
       retries: 30
 
   # The redis cache.
-  redis:
+  dify-redis:
     image: redis:6-alpine
     restart: always
     volumes:
@@ -361,11 +377,13 @@ services:
       - ./volumes/redis/data:/data
     # Set the redis password when startup redis server.
     command: redis-server --requirepass ${REDIS_PASSWORD:-difyai123456}
+    ports:
+      - 10014:6379
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
 
-  # The DifySandbox
-  sandbox:
+  # The DifySandbox, dify的沙箱环境？
+  dify-sandbox:
     image: langgenius/dify-sandbox:0.2.10
     restart: always
     environment:
@@ -376,20 +394,22 @@ services:
       GIN_MODE: ${SANDBOX_GIN_MODE:-release}
       WORKER_TIMEOUT: ${SANDBOX_WORKER_TIMEOUT:-15}
       ENABLE_NETWORK: ${SANDBOX_ENABLE_NETWORK:-true}
-      HTTP_PROXY: ${SANDBOX_HTTP_PROXY:-http://ssrf_proxy:3128}
-      HTTPS_PROXY: ${SANDBOX_HTTPS_PROXY:-http://ssrf_proxy:3128}
+      HTTP_PROXY: ${SANDBOX_HTTP_PROXY:-http://dify-ssrf_proxy:3128}
+      HTTPS_PROXY: ${SANDBOX_HTTPS_PROXY:-http://dify-ssrf_proxy:3128}
       SANDBOX_PORT: ${SANDBOX_PORT:-8194}
     volumes:
       - ./volumes/sandbox/dependencies:/dependencies
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8194/health']
+    ports:
+      - "10015:8194"
     networks:
-      - ssrf_proxy_network
+      - dify-ssrf_proxy_network
 
   # ssrf_proxy server
   # for more information, please refer to
   # https://docs.dify.ai/learn-more/faq/install-faq#id-18.-why-is-ssrf_proxy-needed
-  ssrf_proxy:
+  dify-ssrf_proxy:
     image: ubuntu/squid:latest
     restart: always
     volumes:
@@ -408,13 +428,16 @@ services:
       REVERSE_PROXY_PORT: ${SSRF_REVERSE_PROXY_PORT:-8194}
       SANDBOX_HOST: ${SSRF_SANDBOX_HOST:-sandbox}
       SANDBOX_PORT: ${SANDBOX_PORT:-8194}
+    ports:
+      - "10016:3182"
     networks:
-      - ssrf_proxy_network
+      - dify-ssrf_proxy_network
       - default
 
   # Certbot service
   # use `docker-compose --profile certbot up` to start the certbot service.
-  certbot:
+  # Certbot 是一个自动化的客户端，用于从 Let's Encrypt 获取和续订 SSL/TLS 证书，以实现网站的 HTTPS 加密。
+  dify-certbot:
     image: certbot/certbot
     profiles:
       - certbot
@@ -431,10 +454,12 @@ services:
       - CERTBOT_OPTIONS=${CERTBOT_OPTIONS:-}
     entrypoint: ['/docker-entrypoint.sh']
     command: ['tail', '-f', '/dev/null']
+#    ports:
+#      - 10017:0
 
   # The nginx reverse proxy.
   # used for reverse proxying the API service and Web service.
-  nginx:
+  dify-nginx:
     image: nginx:latest
     restart: always
     volumes:
@@ -471,14 +496,16 @@ services:
       NGINX_ENABLE_CERTBOT_CHALLENGE: ${NGINX_ENABLE_CERTBOT_CHALLENGE:-false}
       CERTBOT_DOMAIN: ${CERTBOT_DOMAIN:-}
     depends_on:
-      - api
-      - web
+      - dify-api
+      - dify-web
     ports:
-      - '${EXPOSE_NGINX_PORT:-80}:${NGINX_PORT:-80}'
-      - '${EXPOSE_NGINX_SSL_PORT:-443}:${NGINX_SSL_PORT:-443}'
+      - 10018:${NGINX_PORT:-80}
+      - 10019:${NGINX_SSL_PORT:-443}
 
   # The Weaviate vector store.
-  weaviate:
+  # Weaviate 是一个基于向量的搜索引擎和知识图谱存储，它允许你存储、搜索和探索复杂的数据结构，如文本、图像和向量。
+  # Weaviate 支持机器学习模型和深度学习模型，可以将非结构化数据转换为向量，并与其他数据进行比较。
+  dify-weaviate:
     image: semitechnologies/weaviate:1.19.0
     profiles:
       - ''
@@ -503,7 +530,8 @@ services:
 
   # Qdrant vector store.
   # (if used, you need to set VECTOR_STORE to qdrant in the api & worker service.)
-  qdrant:
+  # Qdrant 是一个开源的向量搜索引擎，用于处理和搜索大规模向量数据集，特别适合于机器学习和自然语言处理应用。
+  dify-qdrant:
     image: langgenius/qdrant:v1.7.3
     profiles:
       - qdrant
@@ -512,10 +540,14 @@ services:
       - ./volumes/qdrant:/qdrant/storage
     environment:
       QDRANT_API_KEY: ${QDRANT_API_KEY:-difyai123456}
+    ports:
+      - 10021:6333
 
   # The Couchbase vector store.
-  couchbase-server:
+  # Couchbase 是一个分布式云数据库，它提供了文档存储、键值对存储、用户身份验证和同步功能。
+  dify-couchbase-server:
     build: ./couchbase-server
+    image: dify-couchbase-server:v1
     profiles:
       - couchbase
     restart: always
@@ -529,8 +561,8 @@ services:
       - COUCHBASE_EVENTING_RAM_SIZE=512
       - COUCHBASE_INDEX_RAM_SIZE=512
       - COUCHBASE_FTS_RAM_SIZE=1024
-    hostname: couchbase-server
-    container_name: couchbase-server
+    hostname: dify-couchbase-server
+    container_name: dify-couchbase-server
     working_dir: /opt/couchbase
     stdin_open: true
     tty: true
@@ -545,9 +577,12 @@ services:
       retries: 10
       start_period: 30s
       timeout: 10s
+    ports:
+      - 10022:8091
 
   # The pgvector vector database.
-  pgvector:
+  # 基于PostgreSQL 的向量数据库。
+  dify-pgvector:
     image: pgvector/pgvector:pg16
     profiles:
       - pgvector
@@ -567,9 +602,14 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+    ports:
+      - 10023:5432
 
   # pgvecto-rs vector store
-  pgvecto-rs:
+  # pgvecto-rs 是一个基于 Rust 语言实现的向量数据库，它与 PostgreSQL 数据库紧密集成，提供了向量搜索和存储的功能。
+  # pgvecto-rs 利用 PostgreSQL 的强大功能，如事务、索引和查询优化，来管理和查询向量数据。
+  # 所以它连接到dify-pgvector，实现了向量数据存储
+  dify-pgvecto-rs:
     image: tensorchord/pgvecto-rs:pg16-v0.3.0
     profiles:
       - pgvecto-rs
@@ -589,9 +629,12 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+    ports:
+      - 10024:5432  # 宿主机的 5432 端口映射到容器的 5432 端口， 这个端口在postgres已经占用了
 
   # Chroma vector database
-  chroma:
+  # Chroma 是一个开源的向量数据库，用于存储和检索向量数据，它通常用于机器学习和人工智能应用中，特别是在需要进行大规模向量搜索和相似性比较的场景。
+  dify-chroma:
     image: ghcr.io/chroma-core/chroma:0.5.1
     profiles:
       - chroma
@@ -602,9 +645,12 @@ services:
       CHROMA_SERVER_AUTHN_CREDENTIALS: ${CHROMA_SERVER_AUTHN_CREDENTIALS:-difyai123456}
       CHROMA_SERVER_AUTHN_PROVIDER: ${CHROMA_SERVER_AUTHN_PROVIDER:-chromadb.auth.token_authn.TokenAuthenticationServerProvider}
       IS_PERSISTENT: ${CHROMA_IS_PERSISTENT:-TRUE}
+    ports:
+      - 10025:8000
 
   # OceanBase vector database
-  oceanbase:
+  # OceanBase 是一个高性能、高可用、可扩展的分布式关系型数据库，由阿里巴巴集团开发。它支持 SQL 标准，提供事务处理、分析和混合负载能力，适用于多种业务场景。
+  dify-oceanbase:
     image: quay.io/oceanbase/oceanbase-ce:4.3.3.0-100000142024101215
     profiles:
       - oceanbase
@@ -619,9 +665,13 @@ services:
       OB_TENANT_PASSWORD: ${OCEANBASE_VECTOR_PASSWORD:-difyai123456}
       OB_CLUSTER_NAME: ${OCEANBASE_CLUSTER_NAME:-difyai}
       OB_SERVER_IP: '127.0.0.1'
+    ports:
+      - 10026:2881    # OceanBase 默认使用这个端口进行 SQL 服务通信。
+      - 10027:2882    # OceanBase 默认使用这个端口进行 MySQL 协议通信。
+      - 10028:3306    # OceanBase 支持 MySQL 协议，因此可以使用 3306 端口。
 
   # Oracle vector database
-  oracle:
+  dify-oracle:
     image: container-registry.oracle.com/database/free:latest
     profiles:
       - oracle
@@ -634,10 +684,15 @@ services:
     environment:
       ORACLE_PWD: ${ORACLE_PWD:-Dify123456}
       ORACLE_CHARACTERSET: ${ORACLE_CHARACTERSET:-AL32UTF8}
+    ports:
+      - 10029:1521
 
   # Milvus vector database services
-  etcd:
-    container_name: milvus-etcd
+  # 基于 etcd 的键值存储系统，它通常用于分布式系统中的配置管理和服务发现。
+  # etcd 是一个高度可靠的分布式键值存储系统，提供关键数据的一致性和高可用性。
+  # 在 Milvus 向量数据库服务中，etcd 被用作协调服务，管理集群状态和配置。
+  dify-etcd:
+    container_name: dify-milvus-etcd
     image: quay.io/coreos/etcd:v3.5.5
     profiles:
       - milvus
@@ -654,11 +709,13 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    ports:
+      - 10030:2379
     networks:
-      - milvus
+      - dify-milvus
 
-  minio:
-    container_name: milvus-minio
+  dify-minio:
+    container_name: dify-milvus-minio
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     profiles:
       - milvus
@@ -673,11 +730,15 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    ports:
+      - 10031:9000
+      - 10032:9001      # MinIO 的 Web 控制台可以通过 http://<宿主机IP>:9001 访问。
     networks:
-      - milvus
+      - dify-milvus
 
-  milvus-standalone:
-    container_name: milvus-standalone
+  # Milvus 是一个开源的向量数据库，专门用于处理向量搜索、相似性搜索和人工智能应用中的大规模向量数据。
+  dify-milvus-standalone:
+    container_name: dify-milvus-standalone
     image: milvusdb/milvus:v2.3.1
     profiles:
       - milvus
@@ -695,17 +756,19 @@ services:
       timeout: 20s
       retries: 3
     depends_on:
-      - etcd
-      - minio
+      - dify-etcd
+      - dify-minio
     ports:
-      - 19530:19530
-      - 9091:9091
+      - 10033:19530
+      - 10034:9091
     networks:
-      - milvus
+      - dify-milvus
 
   # Opensearch vector database
-  opensearch:
-    container_name: opensearch
+  # OpenSearch 是一个开源的全文搜索和分析引擎，
+  # 它是 Elasticsearch 的一个分支，提供了相同的功能和特性，但完全开源且不受商业许可限制。
+  dify-opensearch:
+    container_name: dify-opensearch
     image: opensearchproject/opensearch:latest
     profiles:
       - opensearch
@@ -723,26 +786,33 @@ services:
         hard: ${OPENSEARCH_NOFILE_HARD:-65536}
     volumes:
       - ./volumes/opensearch/data:/usr/share/opensearch/data
+    ports:
+      - 10035:9200      # REST API 可以通过 http://<宿主机IP>:9200 访问
+      - 10036:9600      # 用于性能分析, # 性能分析 API 可以通过 http://<宿主机IP>:9600 访问。
     networks:
-      - opensearch-net
+      - dify-opensearch-net
 
-  opensearch-dashboards:
-    container_name: opensearch-dashboards
+  # OpenSearch Dashboards 是一个开源的、基于 web 的用户界面，用于与 OpenSearch 交互，进行数据可视化和搜索分析。
+  dify-opensearch-dashboards:
+    container_name: dify-opensearch-dashboards
     image: opensearchproject/opensearch-dashboards:latest
     profiles:
       - opensearch
     environment:
-      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      OPENSEARCH_HOSTS: '["https://dify-opensearch:9200"]'
     volumes:
       - ./volumes/opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+    ports:
+      - 10037:5601        # 使用浏览器通过宿主机的 http://<宿主机IP>:5601 访问 OpenSearch Dashboards 的 Web 界面。
     networks:
-      - opensearch-net
+      - dify-opensearch-net
     depends_on:
-      - opensearch
+      - dify-opensearch
 
   # MyScale vector database
-  myscale:
-    container_name: myscale
+  # MyScale 是一个基于 ClickHouse 的向量数据库，它提供了高性能的向量搜索和分析功能。
+  dify-myscale:
+    container_name: dify-myscale
     image: myscale/myscaledb:1.6.4
     profiles:
       - myscale
@@ -753,13 +823,14 @@ services:
       - ./volumes/myscale/log:/var/log/clickhouse-server
       - ./volumes/myscale/config/users.d/custom_users_config.xml:/etc/clickhouse-server/users.d/custom_users_config.xml
     ports:
-      - ${MYSCALE_PORT:-8123}:${MYSCALE_PORT:-8123}
+      # - ${MYSCALE_PORT:-8123}:${MYSCALE_PORT:-8123}          # 使用 MyScale 的客户端工具或 API 通过宿主机的 8123 端口连接到 MyScale 服务。
+      - 10038:8123
 
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
-  elasticsearch:
+  dify-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
-    container_name: elasticsearch
+    container_name: dify-elasticsearch
     profiles:
       - elasticsearch
     restart: always
@@ -775,7 +846,8 @@ services:
       xpack.security.enrollment.enabled: 'false'
       xpack.security.http.ssl.enabled: 'false'
     ports:
-      - ${ELASTICSEARCH_PORT:-9200}:9200
+      # - ${ELASTICSEARCH_PORT:-9200}:9200
+      - 10039:9200
     healthcheck:
       test: ['CMD', 'curl', '-s', 'http://localhost:9200/_cluster/health?pretty']
       interval: 30s
@@ -784,26 +856,27 @@ services:
 
   # https://www.elastic.co/guide/en/kibana/current/docker.html
   # https://www.elastic.co/guide/en/kibana/current/settings.html
-  kibana:
+  dify-kibana:
     image: docker.elastic.co/kibana/kibana:8.14.3
-    container_name: kibana
+    container_name: dify-kibana
     profiles:
       - elasticsearch
     depends_on:
-      - elasticsearch
+      - dify-elasticsearch
     restart: always
     environment:
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: d1a66dfd-c4d3-4a0a-8290-2abcb83ab3aa
-      NO_PROXY: localhost,127.0.0.1,elasticsearch,kibana
+      NO_PROXY: localhost,127.0.0.1,dify-elasticsearch,dify-kibana
       XPACK_SECURITY_ENABLED: 'true'
       XPACK_SECURITY_ENROLLMENT_ENABLED: 'false'
       XPACK_SECURITY_HTTP_SSL_ENABLED: 'false'
       XPACK_FLEET_ISAIRGAPPED: 'true'
       I18N_LOCALE: zh-CN
       SERVER_PORT: '5601'
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://dify-elasticsearch:9200
     ports:
-      - ${KIBANA_PORT:-5601}:5601
+      # - ${KIBANA_PORT:-5601}:5601
+      - 10040:5601
     healthcheck:
       test: ['CMD-SHELL', 'curl -s http://localhost:5601 >/dev/null || exit 1']
       interval: 30s
@@ -812,7 +885,8 @@ services:
 
   # unstructured .
   # (if used, you need to set ETL_TYPE to Unstructured in the api & worker service.)
-  unstructured:
+  # Unstructured 是一个开源的数据处理和分析平台，它提供了数据摄取、转换、加载（ETL）以及数据探索和分析的功能。
+  dify-unstructured:
     image: downloads.unstructured.io/unstructured-io/unstructured-api:latest
     profiles:
       - unstructured
@@ -822,12 +896,12 @@ services:
 
 networks:
   # create a network between sandbox, api and ssrf_proxy, and can not access outside.
-  ssrf_proxy_network:
+  dify-ssrf_proxy_network:
     driver: bridge
     internal: true
-  milvus:
+  dify-milvus:
     driver: bridge
-  opensearch-net:
+  dify-opensearch-net:
     driver: bridge
     internal: true
 
