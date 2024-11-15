@@ -384,7 +384,7 @@ services:
 
   # The DifySandbox, dify的沙箱环境？
   dify-sandbox:
-    image: registry.cn-hangzhou.aliyuncs.com/docker_all_mirrors/dify-sandbox::0.2.10
+    image: registry.cn-hangzhou.aliyuncs.com/docker_all_mirrors/dify-sandbox:0.2.10
     restart: always
     environment:
       # The DifySandbox configurations
