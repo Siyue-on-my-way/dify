@@ -7,7 +7,7 @@ WORKDIR /app/api
 # if you located in China, you can use aliyun mirror to speed up
 # RUN pip install --no-cache-dir poetry==${POETRY_VERSION} -i https://mirrors.aliyun.com/pypi/simple/
 
-RUN pip install --no-cache-dir poetry==1.8.4
+RUN pip install --no-cache-dir poetry==1.8.4 -i https://mirrors.aliyun.com/pypi/simple/
 
 
 # Configure Poetry
