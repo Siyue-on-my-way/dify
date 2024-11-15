@@ -191,8 +191,8 @@ zhipuai = "~2.1.5"
 
 [tool.poetry.repositories]
 aliyun = {
-  url = "https://mirrors.aliyun.com/pypi/simple/"
-  default = "true"
+    url = "https://mirrors.aliyun.com/pypi/simple/"
+    default = true
 }
 
 ############################################################
