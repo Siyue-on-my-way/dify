@@ -109,10 +109,7 @@ package-mode = false
 ############################################################
 
 [tool.poetry.repositories]
-aliyun = {
-    url = "https://mirrors.aliyun.com/pypi/simple/"
-    default = true
-}
+aliyun = {url = "https://mirrors.aliyun.com/pypi/simple/", default = true}
 
 [tool.poetry.dependencies]
 anthropic = "~0.23.1"
