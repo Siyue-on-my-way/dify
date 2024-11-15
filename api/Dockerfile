@@ -27,6 +27,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc g++ libc-dev libffi-dev libgmp-dev libmpfr-dev libmpc-dev
 
 # Install Python dependencies, 这里， 通过pyproject.toml在安装python的安装包，相当于异步的方式去build
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --sync --no-cache --no-root
 
