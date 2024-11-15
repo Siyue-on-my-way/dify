@@ -3,13 +3,12 @@ FROM registry.cn-hangzhou.aliyuncs.com/docker_all_mirrors/python:3.10-slim-bookw
 
 WORKDIR /app/api
 
-# Install Poetry
-ENV POETRY_VERSION=1.8.4
 
 # if you located in China, you can use aliyun mirror to speed up
 # RUN pip install --no-cache-dir poetry==${POETRY_VERSION} -i https://mirrors.aliyun.com/pypi/simple/
 
-RUN pip install --no-cache-dir poetry==${POETRY_VERSION}
+RUN pip install --no-cache-dir poetry==1.8.4
+
 
 # Configure Poetry
 ENV POETRY_CACHE_DIR=/tmp/poetry_cache
