@@ -323,6 +323,7 @@ services:
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
+      - ../api:/app/api/ # Dockerfile中不COPY代码，这里挂载进去
     networks:
       - dify-ssrf_proxy_network
       - default
