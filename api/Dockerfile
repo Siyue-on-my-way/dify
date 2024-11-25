@@ -33,7 +33,7 @@ RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/
 COPY pyproject.toml poetry.lock ./
 RUN poetry check
 RUN poetry source add --priority=primary aliyun https://mirrors.aliyun.com/pypi/simple/
-RUN poetry install --sync --no-cache --no-root
+RUN poetry lock --no-update && poetry install --sync --no-cache --no-root
 
 # production stage
 FROM base AS production
