@@ -1,5 +1,5 @@
 # base image
-FROM registry.cn-hangzhou.aliyuncs.com/docker_all_mirrors/python:3.10.4 AS base
+FROM registry.cn-hangzhou.aliyuncs.com/docker_all_mirrors/python:3.10-slim-bookworm AS base
 
 WORKDIR /app/api
 
